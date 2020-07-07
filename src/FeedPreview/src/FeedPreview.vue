@@ -1,11 +1,16 @@
 <template>
   <div class="feed">
-    <div v-if="this.rssItems.length">
-      <input placeholder="Search by title..." @input="onInput" />
-      <FeedItem :key="item.title" :item="item" v-for="item in matchingItems" />
+    <div v-if="this.loading">
+      <Spinner />
     </div>
-    <div v-if="!this.rssItems.length">
-      <ErrorDisplay @reload="this.fetchItems" />
+    <div v-else>
+      <div v-if="this.rssItems.length">
+        <input placeholder="Search by title..." @input="onInput" />
+        <FeedItem :key="item.title" :item="item" v-for="item in matchingItems" />
+      </div>
+      <div v-else>
+        <ErrorDisplay @reload="this.fetchItems" />
+      </div>
     </div>
   </div>
 </template>
@@ -13,16 +18,37 @@
 <script>
 import FeedItem from "../components/FeedItem";
 import ErrorDisplay from "../components/ErrorDisplay";
+import Spinner from "../components/Spinner";
+
+const RSS_PROXY = "https://arkadiuszpasek-rss-proxy.herokuapp.com/rss";
 
 export default {
   name: "FeedPreview",
-  components: { FeedItem, ErrorDisplay },
+  components: { FeedItem, ErrorDisplay, Spinner },
+  data() {
+    return {
+      rssItems: [],
+      input: "",
+      loading: false
+    };
+  },
+  props: {
+    url: String
+  },
+  created() {
+    this.fetchItems();
+  },
   computed: {
     matchingItems() {
       return this.rssItems.filter(({ title }) => {
-        const regex = new RegExp(`^${this.input}`, "gi");
+        const regex = new RegExp(`${this.input}`, "gi");
         return regex.test(title);
       });
+    }
+  },
+  watch: {
+    url() {
+      this.fetchItems();
     }
   },
   methods: {
@@ -30,8 +56,11 @@ export default {
       this.input = e.target.value;
     },
     async fetchItems() {
+      this.loading = true;
+
       try {
-        const res = await fetch(this.url, { mode: "cors" });
+        const fetchUrl = encodeURIComponent(this.url);
+        const res = await fetch(`${RSS_PROXY}/?url=${fetchUrl}`);
         const data = await res.text();
         const rss = await new window.DOMParser().parseFromString(
           data,
@@ -53,20 +82,10 @@ export default {
         });
       } catch (err) {
         //
+      } finally {
+        this.loading = false;
       }
     }
-  },
-  async created() {
-    this.fetchItems();
-  },
-  props: {
-    url: String
-  },
-  data() {
-    return {
-      rssItems: [],
-      input: ""
-    };
   }
 };
 </script>

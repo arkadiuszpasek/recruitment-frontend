@@ -1,6 +1,6 @@
 
 module.exports = {
-  publicPath: "/recruitment-frontend/",
+  publicPath: "./",
   runtimeCompiler: true,
   filenameHashing: false,
   chainWebpack: config => {

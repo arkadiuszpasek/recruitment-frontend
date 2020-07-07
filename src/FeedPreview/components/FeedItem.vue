@@ -6,7 +6,7 @@
           <h4 v-html="this.item.title"></h4>
           <p class="meta">Article published: {{this.item.date.toLocaleString()}}</p>
         </div>
-        <img :src="this.item.url" class="image" />
+        <img v-if="this.item.url" :src="this.item.url" class="image" />
       </div>
     </a>
   </div>
@@ -28,39 +28,44 @@ export default {
 
 <style lang="scss" scoped>
 .feed-item {
-  margin: 1.5rem auto;
   width: 100%;
+  margin: 1.5rem auto;
   min-width: 360px;
-  max-width: 960px;
-  background-color: #f3f3f3;
+  max-width: 360px;
   border-radius: 5px;
-  text-align: left;
-
-  .container {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-
-    @media all and (min-width: 768px) {
-      flex-direction: row;
-    }
-  }
+  background-color: #f3f3f3;
+  box-shadow: 1px 1px 7px #747474;
 
   transition: all 0.15s ease;
   &:hover {
-    transform: scale(1.02);
+    transform: scale(1.01);
   }
-  .meta {
-    font-size: 75%;
+  @media all and (min-width: 768px) {
+    max-width: 640px;
+    text-align: left;
   }
+}
+.container {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 
-  .image {
-    max-width: 300px;
-    max-height: 150px;
-    border-radius: 5px;
-    margin: 0 1rem;
+  @media all and (min-width: 768px) {
+    text-align: left;
+    flex-direction: row;
   }
+}
+.meta {
+  font-size: 75%;
+}
+
+.image {
+  width: 100%;
+  margin: 0 1rem;
+  max-width: 200px;
+  min-width: 200px;
+  border-radius: 5px;
 }
 </style>

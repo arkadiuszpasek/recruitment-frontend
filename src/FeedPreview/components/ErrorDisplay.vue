@@ -1,7 +1,7 @@
 <template>
   <div class="container" @click="onClick">
     <div class="reload">&#8635;</div>
-    <h4>Argh... something went wrong. Please try again</h4>
+    <h4>Argh...something went wrong. Please try again</h4>
   </div>
 </template>
 
@@ -22,21 +22,18 @@ export default {
 }
 
 .container {
+  width: 100%;
+  max-width: 640px;
   padding: 1rem;
   margin: 1rem auto;
-  width: 100%;
-  max-width: 960px;
-  background-color: #f3f3f3;
   border-radius: 5px;
+  background-color: #f3f3f3;
+
   cursor: pointer;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: space-around;
-
-  @media all and (min-width: 768px) {
-    flex-direction: row;
-  }
+  flex-direction: row;
 
   transition: all 0.2s ease;
   &:hover {

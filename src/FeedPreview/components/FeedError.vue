@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: "ErrorDisplay",
+  name: "FeedError",
   methods: {
     onClick() {
       this.$emit("reload");

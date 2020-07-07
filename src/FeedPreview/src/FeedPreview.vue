@@ -1,7 +1,7 @@
 <template>
   <div class="feed">
-    <div v-if="this.loading">
-      <Spinner />
+    <div v-if="this.isLoading">
+      <LoadingSpinner />
     </div>
     <div v-else>
       <div v-if="this.rssItems.length">
@@ -9,7 +9,7 @@
         <FeedItem :key="item.title" :item="item" v-for="item in matchingItems" />
       </div>
       <div v-else>
-        <ErrorDisplay @reload="this.fetchItems" />
+        <FeedError @reload="this.fetchItems" />
       </div>
     </div>
   </div>
@@ -17,19 +17,19 @@
 
 <script>
 import FeedItem from "../components/FeedItem";
-import ErrorDisplay from "../components/ErrorDisplay";
-import Spinner from "../components/Spinner";
+import FeedError from "../components/FeedError";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const RSS_PROXY = "https://arkadiuszpasek-rss-proxy.herokuapp.com/rss";
 
 export default {
   name: "FeedPreview",
-  components: { FeedItem, ErrorDisplay, Spinner },
+  components: { FeedItem, FeedError, LoadingSpinner },
   data() {
     return {
       rssItems: [],
-      input: "",
-      loading: false
+      searchInput: "",
+      isLoading: false
     };
   },
   props: {
@@ -41,7 +41,7 @@ export default {
   computed: {
     matchingItems() {
       return this.rssItems.filter(({ title }) => {
-        const regex = new RegExp(`${this.input}`, "gi");
+        const regex = new RegExp(`${this.searchInput}`, "gi");
         return regex.test(title);
       });
     }
@@ -53,10 +53,10 @@ export default {
   },
   methods: {
     onInput(e) {
-      this.input = e.target.value;
+      this.searchInput = e.target.value;
     },
     async fetchItems() {
-      this.loading = true;
+      this.isLoading = true;
 
       try {
         const fetchUrl = encodeURIComponent(this.url);
@@ -75,15 +75,15 @@ export default {
 
           return {
             title: title ? title.textContent : "",
-            link: link ? link.textContent : "",
-            url: media ? media.getAttribute("url") : "",
+            linkUrl: link ? link.textContent : "",
+            mediaUrl: media ? media.getAttribute("url") : "",
             date: date ? new Date(date.textContent) : null
           };
         });
       } catch (err) {
         //
       } finally {
-        this.loading = false;
+        this.isLoading = false;
       }
     }
   }

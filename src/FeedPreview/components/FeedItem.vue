@@ -1,12 +1,12 @@
 <template>
   <div class="feed-item">
-    <a :href="this.item.link" target="_blank">
+    <a :href="this.item.linkUrl" target="_blank">
       <div class="container">
         <div class="information">
           <h4 v-html="this.item.title"></h4>
           <p class="meta">Article published: {{this.item.date.toLocaleString()}}</p>
         </div>
-        <img v-if="this.item.url" :src="this.item.url" class="image" />
+        <img v-if="this.item.mediaUrl" :src="this.item.mediaUrl" class="image" />
       </div>
     </a>
   </div>
@@ -17,10 +17,19 @@ export default {
   name: "FeedItem",
   props: {
     item: {
-      title: String,
-      url: String,
-      date: Date,
-      link: String
+      mediaUrl: String,
+      date: {
+        type: Date,
+        required: true
+      },
+      title: {
+        type: String,
+        required: true
+      },
+      linkUrl: {
+        type: String,
+        required: true
+      }
     }
   }
 };
@@ -40,6 +49,7 @@ export default {
   &:hover {
     transform: scale(1.01);
   }
+
   @media all and (min-width: 768px) {
     max-width: 640px;
     text-align: left;
